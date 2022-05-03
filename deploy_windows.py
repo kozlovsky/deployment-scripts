@@ -10,6 +10,7 @@ from __future__ import print_function
 
 import os
 import time
+import subprocess
 
 from deployment_utils import check_sha256_hash, fetch_latest_build_artifact, init_sentry, print_and_exit, \
     tribler_is_installed
@@ -37,7 +38,7 @@ if __name__ == '__main__':
     success_install = False
     for _ in range(5):
         # Step 3: run the installer
-        os.system("%s /S" % INSTALLER_FILE)
+        subprocess.run([INSTALLER_FILE, "/S"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         diff_time = time.time() - start_time
         print('Installed Tribler in %s in %s seconds' % (build_type, diff_time))
