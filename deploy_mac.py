@@ -5,8 +5,6 @@ It expects the following environment variable be provided:
 - BUILD_TYPE : Build type [Win64, Win32, Linux, MacOS]
 - WORKSPACE : Jenkins workspace (set by jenkins itself)
 """
-from __future__ import print_function
-
 import os
 import time
 
@@ -29,7 +27,7 @@ if __name__ == '__main__':
     APP_PATH = os.path.join(os.environ.get('WORKSPACE'), "Tribler.app")
 
     # Step 2: check SHA256 hash
-    if not check_sha256_hash(INSTALLER_FILE, HASH):
+    if HASH and not check_sha256_hash(INSTALLER_FILE, HASH):
         print_and_exit("SHA256 of file does not match with target hash %s" % HASH)
 
     # Step 3: Mount the dmg file

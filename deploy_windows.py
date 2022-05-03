@@ -6,8 +6,6 @@ variable:
 - BUILD_TYPE : Build type [Win64, Win32, Linux, MacOS]
 - WORKSPACE : Jenkins workspace (set by jenkins itself)
 """
-from __future__ import print_function
-
 import os
 import time
 import subprocess
@@ -29,10 +27,10 @@ if __name__ == '__main__':
     INSTALLER_FILE, HASH = fetch_latest_build_artifact(job_url, build_type)
 
     # Step 2: check SHA256 hash
-    if not check_sha256_hash(INSTALLER_FILE, HASH):
+    if HASH and not check_sha256_hash(INSTALLER_FILE, HASH):
         print("SHA256 of file does not match with target hash %s, we retry to download it" % HASH)
         INSTALLER_FILE, HASH = fetch_latest_build_artifact(job_url, build_type)
-        if not check_sha256_hash(INSTALLER_FILE, HASH):
+        if HASH and not check_sha256_hash(INSTALLER_FILE, HASH):
             print_and_exit("Download seems to be really broken, bailing out")
 
     success_install = False

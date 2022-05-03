@@ -10,8 +10,6 @@ variable be provided:
 - WORKSPACE : Jenkins workspace (set by jenkins itself)
 - TRIBLER_PASSWORD : Local user password
 """
-from __future__ import print_function
-
 import os
 import time
 
@@ -32,7 +30,7 @@ if __name__ == '__main__':
     INSTALLER_FILE, HASH = fetch_latest_build_artifact(job_url, build_type)
 
     # Step 2: check SHA256 hash
-    if not check_sha256_hash(INSTALLER_FILE, HASH):
+    if HASH and not check_sha256_hash(INSTALLER_FILE, HASH):
         print_and_exit("SHA256 of file does not match with target hash %s" % HASH)
 
     # Step 3: Remove dpkg lock if exists
