@@ -16,8 +16,6 @@ from deployment_utils import check_sha256_hash, fetch_latest_build_artifact, ini
 if __name__ == '__main__':
     init_sentry()
 
-    start_time = time.time()
-
     # Step 1: fetch the latest Tribler installer from Jenkins
     build_type = os.environ.get('BUILD_TYPE', 'Win64')
     job_url = os.environ.get('JENKINS_JOB_URL', None)
@@ -39,10 +37,12 @@ if __name__ == '__main__':
 
     # Step 3: run the installer
     print('Installing Tribler')
-    subprocess.run([INSTALLER_FILE, "/S"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    start_time = time.time()
 
+    subprocess.run([INSTALLER_FILE, "/S"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     diff_time = time.time() - start_time
-    print('Installed Tribler in %s in %s seconds' % (build_type, diff_time))
+
+    print('Tribler installed in %s in %s seconds' % (build_type, diff_time))
     time.sleep(3)
 
     # Step 4: check whether Tribler has been correctly installed
