@@ -36,15 +36,21 @@ if __name__ == '__main__':
     time.sleep(10)
 
     # Step 3: run the installer
-    print('Installing Tribler')
-    start_time = time.time()
+    success_install = False
+    for i in range(10):
+        print('Installing Tribler' if not i else 'Try again...')
+        start_time = time.time()
 
-    subprocess.run([INSTALLER_FILE, "/S"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    diff_time = time.time() - start_time
+        subprocess.run([INSTALLER_FILE, "/S"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        diff_time = time.time() - start_time
 
-    print('Tribler installed in %s in %s seconds' % (build_type, diff_time))
-    time.sleep(3)
+        print('Tribler %s installation finishes in %s seconds' % (build_type, diff_time))
+        time.sleep(10)
 
-    # Step 4: check whether Tribler has been correctly installed
-    if not tribler_is_installed():
+        # Step 4: check whether Tribler has been correctly installed
+        if tribler_is_installed():
+            success_install = True
+            break
+
+    if not success_install:
         print_and_exit('Tribler has not been correctly installed')
