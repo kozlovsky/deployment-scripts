@@ -6,12 +6,13 @@ variable:
 - BUILD_TYPE : Build type [Win64, Win32, Linux, MacOS]
 - WORKSPACE : Jenkins workspace (set by jenkins itself)
 """
-import os
-import time
 import subprocess
+import time
+import os
 
 from deployment_utils import check_sha256_hash, fetch_latest_build_artifact, init_sentry, print_and_exit, \
     tribler_is_installed
+
 
 if __name__ == '__main__':
     init_sentry()
@@ -22,7 +23,9 @@ if __name__ == '__main__':
     if not job_url:
         print_and_exit('JENKINS_JOB_URL is not set')
 
+    print('Fetching latest artifacts')
     INSTALLER_FILE, HASH = fetch_latest_build_artifact(job_url, build_type)
+    print('Artifacts are fetched')
 
     # Step 2: check SHA256 hash
     if HASH and not check_sha256_hash(INSTALLER_FILE, HASH):
