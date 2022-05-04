@@ -31,7 +31,7 @@ if __name__ == '__main__':
         if HASH and not check_sha256_hash(INSTALLER_FILE, HASH):
             print_and_exit("Download seems to be really broken, bailing out")
 
-    # Add waiting time before installer start to be sure that deinstaller finishes its background tasks
+    # Add waiting time before installer start to be sure that deinstaller finishes possible background tasks
     print('Pre-install pause')
     time.sleep(10)
 
@@ -41,16 +41,25 @@ if __name__ == '__main__':
         print('Installing Tribler' if not i else 'Try again...')
         start_time = time.time()
 
-        subprocess.run([INSTALLER_FILE, "/S"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        completed_process = subprocess.run([INSTALLER_FILE, "/S"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         diff_time = time.time() - start_time
 
-        print('Tribler %s installation finishes in %s seconds' % (build_type, diff_time))
-        time.sleep(10)
+        print('Tribler %s installation finishes in %s seconds' % (build_type, diff_time), end=' ')
 
-        # Step 4: check whether Tribler has been correctly installed
-        if tribler_is_installed():
-            success_install = True
-            break
+        if completed_process.returncode != 0:
+            print(f'with error code {completed_process.returncode}.\n'
+                  f'Stdout:\n{completed_process.stdout}\n\nStderr:\n{completed_process.stderr}\n\n')
+        else:
+            # Step 4: check whether Tribler has been correctly installed
+            time.sleep(3)
+            if tribler_is_installed():
+                print('successfully')
+                success_install = True
+                break
+            else:
+                print('without an error, but Tribler is not installed')
+
+        time.sleep(10)
 
     if not success_install:
         print_and_exit('Tribler has not been correctly installed')
